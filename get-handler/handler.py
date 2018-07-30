@@ -17,5 +17,8 @@ def handle(req):
     with open(path, 'r') as json_data:
         university_details = json.load(json_data)
         json_data.close()
-        
-    return university_details[university_name][parameter]
+      
+    if isinstance(university_details[university_name][parameter],str) =='str':
+        return university_details[university_name][parameter]
+    else:
+        return json.dumps(university_details[university_name][parameter])
