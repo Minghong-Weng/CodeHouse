@@ -19,6 +19,9 @@ ID_TO_SKILLS ={"0": ["Data structures & Algorithms", "Distributed Systems", "OS/
 
 ID_TO_UNIVERSITY={"0": ["Stanford University", "Massachusetts Institute of Technology", "Carnegie Mellon University", "University of California, Berkeley", "University of Michigan"], "1":["Carnegie Mellon University", "University of Washington", "University of California, Berkeley", "Columbia University", "Stanford University"], "2": ["Carnegie Mellon University", "Georgia Institute of Technology", "Massachusetts Institute of Technology", "University of Michigan", "University of Southern California"], "3":["Massachusetts Institute of Technology", "Stanford University", "Georgia Institute of Technology","California Institute of Technology", "University of Michigan"]}
 
+BYE_KEYWORDS = ("bye", "exit", "quit")
+BYE_RESPONSES = ["bye, take care!", "see you soon", "hope we helped you, bye now!"]
+
 def handle(req):
     """handle a request to the function
     Args:
@@ -54,6 +57,10 @@ def handle(req):
     for word in sentence.split(' '):
         if word.lower() in GREETING_KEYWORDS:
             return random.choice(GREETING_RESPONSES)
+
+    for word in sentence.split(' '):
+        if word.lower() in BYE_KEYWORDS:
+            return random.choice(BYE_RESPONSES)
 
     return "Sorry I do not understand!"
 
