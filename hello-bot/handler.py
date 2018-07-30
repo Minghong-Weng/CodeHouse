@@ -93,8 +93,8 @@ def handle(req):
             desc_res = random.choice(DESCRIPTION_RESPONSES)
             
             r = requests.get("http://gateway:8080/function/get-handler", data=json.dumps(json_obj))
-            result = r.json()
-            return desc_res+str(result)
+            result ="https://en.wikipedia.org/wiki/"+university_name.replace(' ', '_')
+            return desc_res+" \n "+str(result) 
         if "mentor" in sentence.lower() or "volunteer" in sentence.lower():
             json_obj["parameter"] = "mail"
             mail_res = random.choice(MAIL_RESPONSES)
