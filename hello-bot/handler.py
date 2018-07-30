@@ -14,7 +14,7 @@ GREETING_KEYWORDS = ("hello", "hi", "greetings", "sup", "what's up","hey", "ola"
 GREETING_RESPONSES = ["Hey There! Welcome to The Big STEM Theory! We help you start planning your career with a big bang. Let us know what you want to be! ", "Greetings! I am a chatbot for The Big STEM Theory! I am here to help you achieve your dreams. What profession would you like to pursue?", "Good evening! I am a virtual assistant to your career. Let me know what your ambition is and I'll help you get there!"]
 PROFESSION_TO_ID = {"Software Engineer": "0", "Data Scientist":"1", "Robotics Engineer":"2", "Aerospace Engineer":"3"}
 
-AVG_SALARIES = [100690, 133000, 81097,107830]
+AVG_SALARIES = ["100,690", "133,000", "81,097","107830"]
 
 ID_TO_SKILLS ={"0": ["Data structures & Algorithms", "Distributed Systems", "OS/Networking"], "1": ["Statistics","Database Systems", "Data Modeling and Visualisation"],"2": ["Computer Vision", "Planning & Decision-making in robotics", "Mathematics/ Statistical techniques"], "3":["Computer Aided Design","Aerodynamiscs","Propulsion Systems"]}
 
@@ -71,7 +71,7 @@ def handle(req):
     if len(university_name) != 0:
         json_obj = {}
         json_obj["university"] = university_name
-        if "budget" in sentence.lower() or sentence.lower().startswith("how much") or "cost" in sentence.lower():
+        if "budget" in sentence.lower() or sentence.lower().startswith("how much") or "cost" in sentence.lower() or "tuition" in sentence.lower():
             
             json_obj["parameter"] = "budget"
             budget_res = random.choice(BUDGET_RESPONSES)
@@ -134,7 +134,7 @@ def profession_info(profession):
 
     ENDING_RESPONSES =['Feel free to ask me more questions about any of these universities', 'Ping me for information regarding these schools', 'I know more about these colleges. Ask me anything from location to tuition. I will try and help you!']
 
-    return random.choice(SKILL_RESPONSES)+'\n' + '\n'.join(skills) + '\n' + "Also, " +random.choice(SALARY_RESPONSES) + str(AVG_SALARIES[int(id)])+ "\n"+random.choice(UNIV_RESPONSES)+'\n' + '\n'.join(univs) + "\n \n " + random.choice(ENDING_RESPONSES)
+    return random.choice(SKILL_RESPONSES)+'\n' + '\n'.join(skills) + '\n' + "Also, " +random.choice(SALARY_RESPONSES) +AVG_SALARIES[int(id)]+ "\n"+random.choice(UNIV_RESPONSES)+'\n' + '\n'.join(univs) + "\n \n " + random.choice(ENDING_RESPONSES)
 
 
 
