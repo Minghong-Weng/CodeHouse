@@ -68,6 +68,7 @@ def handle(req):
         index = [x for x in range(len(postags)) if postags[x:x+len(pat)] == pat]
         if len(index) != 0:
             university_name = ' '.join(words[index[0]: index[0]+len(pat)])
+            break
 
     if len(university_name) != 0:
         json_obj = {}
@@ -99,9 +100,8 @@ def handle(req):
                 result = strip_tags(result['query']['pages']['26977']['extract']).strip()
             else:
                 r = requests.get("http://gateway:8080/function/get-handler", data=json.dumps(json_obj))
-                result = r.json()
-
-            return desc_res+str(result)
+                result = "https://en.wikipedia.org/wiki/" + university_name.replace(' ', '_')
+            return desc_res+" \n "+str(result) 
         if "mentor" in sentence.lower() or "volunteer" in sentence.lower():
             json_obj["parameter"] = "mail"
             mail_res = random.choice(MAIL_RESPONSES)
