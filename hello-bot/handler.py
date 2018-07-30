@@ -5,6 +5,7 @@ import os
 from textblob import TextBlob
 import nltk
 import requests
+from html.parser import HTMLParser
 nltk.download('brown')
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
@@ -67,6 +68,7 @@ def handle(req):
         index = [x for x in range(len(postags)) if postags[x:x+len(pat)] == pat]
         if len(index) != 0:
             university_name = ' '.join(words[index[0]: index[0]+len(pat)])
+            break
 
     if len(university_name) != 0:
         json_obj = {}
@@ -91,9 +93,14 @@ def handle(req):
         if "tell me " in sentence.lower() or "about" in sentence.lower() or "details" in sentence.lower() or "information" in sentence.lower():
             json_obj["parameter"] = "description"
             desc_res = random.choice(DESCRIPTION_RESPONSES)
-            
-            r = requests.get("http://gateway:8080/function/get-handler", data=json.dumps(json_obj))
-            result ="https://en.wikipedia.org/wiki/"+university_name.replace(' ', '_')
+
+            if(university_name == 'Stanford University'):
+                r = requests.get("https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles="+university_name, data=json.dumps(json_obj))
+                result = r.json()
+                result = strip_tags(result['query']['pages']['26977']['extract']).strip()
+            else:
+                r = requests.get("http://gateway:8080/function/get-handler", data=json.dumps(json_obj))
+                result = "https://en.wikipedia.org/wiki/" + university_name.replace(' ', '_')
             return desc_res+" \n "+str(result) 
         if "mentor" in sentence.lower() or "volunteer" in sentence.lower():
             json_obj["parameter"] = "mail"
@@ -149,6 +156,20 @@ def profession_info(profession):
 
     return random.choice(SKILL_RESPONSES)+'\n' + '\n'.join(skills) + '\n' + "Also, " +random.choice(SALARY_RESPONSES) +AVG_SALARIES[int(id)]+ "\n"+random.choice(UNIV_RESPONSES)+'\n' + '\n'.join(univs) + "\n \n " + random.choice(ENDING_RESPONSES)
 
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.strict = False
+        self.convert_charrefs= True
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
 
+def strip_tags(html):
+    s = MLStripper()
+    s.feed(html)
+    return s.get_data()
 
 #university_details = 
