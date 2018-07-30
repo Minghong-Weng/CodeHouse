@@ -3,12 +3,7 @@ provider:
   gateway: http://127.0.0.1:8080
 
 functions:
-  hello-bot:
-    lang: python3
-    handler: ./hello-bot
-    image: hello-bot
   get-handler:
     lang: python3
     handler: ./get-handler
     image: get-handler
-
