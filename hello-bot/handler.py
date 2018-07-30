@@ -126,7 +126,7 @@ def handle(req):
         if "bye" in word.lower():
             return random.choice(BYE_RESPONSES)
 
-    return "Sorry I do not understand!"
+    return "Sorry I do not understand! /shrug"
 
 
 def profession_info(profession):
