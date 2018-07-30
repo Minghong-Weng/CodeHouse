@@ -8,7 +8,7 @@ nltk.download('brown')
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 
-GREETING_KEYWORDS = ("hello", "hi", "greetings", "sup", "what's up",)
+GREETING_KEYWORDS = ("hello", "hi", "greetings", "sup", "what's up","hey", "ola")
 
 GREETING_RESPONSES = ["'sup bro", "hey", "*nods*", "hey you get my snap?"]
 PROFESSION_TO_ID = {"Software Engineer": 0, "Data Scientist":1, "Robotics Engineer":2, "Aerospace Engineer":3}
@@ -27,9 +27,7 @@ def handle(req):
 
     ## GREETING MESSAGE
     sentence=req
-    # for word in sentence.split(' '):
-    #     if word.lower() in GREETING_KEYWORDS:
-    #         return random.choice(GREETING_RESPONSES)
+   
 
 
     ## GET UNIVERSITY DETAILS
@@ -50,6 +48,10 @@ def handle(req):
         index = [x for x in range(len(postags)) if postags[x:x+len(pat)] == pat]
         if len(index) != 0:
             return ' '.join(words[index[0]: index[0]+len(pat)])
+
+    for word in sentence.split(' '):
+        if word.lower() in GREETING_KEYWORDS:
+            return random.choice(GREETING_RESPONSES)
 
     return "Sorry I do not understand!"
 
