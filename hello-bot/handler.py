@@ -11,7 +11,7 @@ nltk.download('averaged_perceptron_tagger')
 
 GREETING_KEYWORDS = ("hello", "hi", "greetings", "sup", "what's up","hey", "ola")
 
-GREETING_RESPONSES = ["'sup bro", "hey", "*nods*", "hey you get my snap?"]
+GREETING_RESPONSES = ["Hey There! Welcome to The Big STEM Theory! We help you start planning your career with a big bang. Let us know what you want to be! ", "Greetings! I am a chatbot for The Big STEM Theory! I am here to help you achieve your dreams. What profession would you like to pursue?", "Good evening! I am a virtual assistant to your career. Let me know what your ambition is and I'll help you get there!"]
 PROFESSION_TO_ID = {"Software Engineer": "0", "Data Scientist":"1", "Robotics Engineer":"2", "Aerospace Engineer":"3"}
 
 AVG_SALARIES = [100690, 133000, 81097,107830]
@@ -29,6 +29,8 @@ DESCRIPTION_RESPONSES = ['Oh yeah, Ofcourse. Here is some information from Wikip
 WEBSITE_RESPONSES = ["Check out more at ", "More information is provided on their website. I have got that for you ", "Feel free to check them out on their website"]
 BYE_KEYWORDS = ("bye", "exit", "quit")
 BYE_RESPONSES = ["bye, take care!", "see you soon", "hope we helped you, bye now!"]
+
+SALARY_RESPONSES=["Hey this job pays great! The median salary is $", "It definitely pays well, about $", "The average salary for this job is $"]
 
 def handle(req):
     """handle a request to the function
@@ -62,11 +64,12 @@ def handle(req):
         index = [x for x in range(len(postags)) if postags[x:x+len(pat)] == pat]
         if len(index) != 0:
             university_name = ' '.join(words[index[0]: index[0]+len(pat)])
-    
+
     if len(university_name) != 0:
+        json_obj = {}
+        json_obj["university"] = university_name
         if "budget" in sentence.lower() or sentence.lower().startswith("how much") or "cost" in sentence.lower():
-            json_obj = {}
-            json_obj["university"] = university_name
+            
             json_obj["parameter"] = "budget"
             budget_res = random.choice(BUDGET_RESPONSES)
             
@@ -75,8 +78,6 @@ def handle(req):
             return budget_res[0]+" "+str(result)+ " " + budget_res[1]
 
         if "location" in sentence.lower() or "where" in sentence.lower() or "address" in sentence.lower() or "located in" in sentence.lower()  or sentence.lower().startswith("what part") :
-            json_obj = {}
-            json_obj["university"] = university_name
             json_obj["parameter"] = "location"
             location_res = random.choice(LOCATION_RESPONSES)
             
@@ -85,8 +86,6 @@ def handle(req):
             return location_res+" "+result["city"]+random.choice([" , ", " in ", " in the state of "])+result["state"]
         
         if "tell me " in sentence.lower() or "about" in sentence.lower() or "details" in sentence.lower() or "information" in sentence.lower():
-            json_obj = {}
-            json_obj["university"] = university_name
             json_obj["parameter"] = "description"
             desc_res = random.choice(DESCRIPTION_RESPONSES)
             
@@ -95,8 +94,6 @@ def handle(req):
             return desc_res+str(result)
 
         if "contact" in sentence.lower() or "reach" in sentence.lower() or "website" in sentence.lower() or "email" in sentence.lower():
-            json_obj = {}
-            json_obj["university"] = university_name
             json_obj["parameter"] = "website"
             website_res = random.choice(WEBSITE_RESPONSES)
             
@@ -104,11 +101,11 @@ def handle(req):
             result = r.json()
             return website_res+str(result)
 
-
+    ##GREETING
     for word in sentence.split(' '):
         if word.lower() in GREETING_KEYWORDS:
             return random.choice(GREETING_RESPONSES)
-
+    ##BYEE
     for word in sentence.split(' '):
         if word.lower() in BYE_KEYWORDS:
             return random.choice(BYE_RESPONSES)
@@ -125,12 +122,16 @@ def profession_info(profession):
     univs = ID_TO_UNIVERSITY.get(id)
     for i in range(1,6):
         univs[i-1] = str(i)+' '+univs[i-1]
-    SKILL_RESPONSES = ["Okay, I did a little research for you! Here are the top skills needed for a "+profession+":",
-                       "These are the skills a "+profession+" needs to acquire: "]
-    UNIV_RESPONSES = ["These universities have the highest rankings for the above skills: ",
-                      "For acquiring the above skills consider going to the following schools: "]
+    SKILL_RESPONSES = ["Okay, I did a little research for you! Here are the top skills needed for being a "+profession+":",
+                       "These are the skills for this job: ", 
+                       "These skills are what the other "+profession+"s  have in the job market today!"]
+    UNIV_RESPONSES = ["Guess what? Here are the top 5 schools with some great degrees",
+                      "For acquiring the above skills,  you should totally consider going to the following schools: ", 
+                      "I have something else for you. You can pursue these skills at these high ranked universities"]
 
-    return random.choice(SKILL_RESPONSES)+'\n' + '\n'.join(skills) + '\n' + random.choice(UNIV_RESPONSES)+'\n' + '\n'.join(univs)
+    ENDING_RESPONSES =['Feel free to ask me more questions about any of these universities', 'Ping me for information regarding these schools', 'I know more about these colleges. Ask me anything from location to tuition. I will try and help you!']
+
+    return random.choice(SKILL_RESPONSES)+'\n' + '\n'.join(skills) + '\n' + "Also, " +random.choice(SALARY_RESPONSES) + str(AVG_SALARIES[int(id)])+ "\n"+random.choice(UNIV_RESPONSES)+'\n' + '\n'.join(univs) + "\n \n " + random.choice(ENDING_RESPONSES)
 
 
 
