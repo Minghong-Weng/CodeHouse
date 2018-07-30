@@ -27,11 +27,11 @@ LOCATION_RESPONSES = ['Sure, The college is at', 'Definitely! It is in', 'Of Cou
 
 DESCRIPTION_RESPONSES = ['Oh yeah, Ofcourse. Here is some information from Wikipedia. \n',' Sure, I have got some details from Wikipedia for you! \n', "This is what Wikipedia has to say about it! \n"]
 WEBSITE_RESPONSES = ["Check out more at ", "More information is provided on their website. I have got that for you ", "Feel free to check them out on their website"]
-BYE_KEYWORDS = ("bye", "exit", "quit")
-BYE_RESPONSES = ["bye, take care!", "see you soon", "hope we helped you, bye now!"]
+BYE_KEYWORDS = ("Bye", "Good Bye", "Stop", "Quit")
+BYE_RESPONSES = ["Bye, See you soon!", "Catch you later, Toodles!", "Look forward to helping you again"]
 
-SALARY_RESPONSES=["Hey this job pays great! The median salary is $", "It definitely pays well, about $", "The average salary for this job is $"]
-
+SALARY_RESPONSES=["This job also pays great! The median salary is $", "It definitely pays well, about $", "The average salary for this job is $"]
+MAIL_RESPONSES = ["Here is the mail id of ", "Send an email out to our volunteer", "Yes, Mail "]
 def handle(req):
     """handle a request to the function
     Args:
@@ -95,14 +95,27 @@ def handle(req):
             r = requests.get("http://gateway:8080/function/get-handler", data=json.dumps(json_obj))
             result = r.json()
             return desc_res+str(result)
-
-        if "contact" in sentence.lower() or "reach" in sentence.lower() or "website" in sentence.lower() or "email" in sentence.lower():
+        if "mentor" in sentence.lower() or "volunteer" in sentence.lower():
+            json_obj["parameter"] = "mail"
+            mail_res = random.choice(MAIL_RESPONSES)
+            
+            r = requests.get("http://gateway:8080/function/get-handler", data=json.dumps(json_obj))
+            result = r.json()
+            json_obj["parameter"] = "name"
+            
+            r = requests.get("http://gateway:8080/function/get-handler", data=json.dumps(json_obj))
+            result1 = r.json()
+            return mail_res + " " + result1 + " " +random.choice(["@", "at", "through"]) + " " + result
+        if "contact" in sentence.lower() or "reach" in sentence.lower() or "website" in sentence.lower():
             json_obj["parameter"] = "website"
             website_res = random.choice(WEBSITE_RESPONSES)
             
             r = requests.get("http://gateway:8080/function/get-handler", data=json.dumps(json_obj))
             result = r.json()
-            return website_res+str(result)
+            return website_res+" "+str(result)
+        
+    if "thank you" in sentence.lower() or "thanks" in sentence.lower() :
+        return random.choice(["Happy to help! :)", "I am so glad to have helped you! Have a great day!", "You're welcome. Feel free to reach out to me!"]) + "\n" + "I can help you reach out to our volunteers at any of these universities. Type speak to mentor / contact mentor at University Name."
 
     ##GREETING
     for word in sentence.split(' '):
@@ -110,7 +123,7 @@ def handle(req):
             return random.choice(GREETING_RESPONSES)
     ##BYEE
     for word in sentence.split(' '):
-        if word.lower() in BYE_KEYWORDS:
+        if "bye" in word.lower():
             return random.choice(BYE_RESPONSES)
 
     return "Sorry I do not understand!"
