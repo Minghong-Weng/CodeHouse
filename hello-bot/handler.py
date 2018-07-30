@@ -40,8 +40,11 @@ def handle(req):
     sentence=req
    
     ## get details about profession
-    if req in PROFESSION_TO_ID:
-        return profession_info(req)
+
+    for profession in PROFESSION_TO_ID.keys():
+        if profession.lower() in req.lower():
+            return profession_info(profession)
+
 
     ## GET UNIVERSITY DETAILS
 
